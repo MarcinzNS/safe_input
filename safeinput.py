@@ -1,7 +1,7 @@
 import re
 
-NORMAL = "\033[0;37;40m"
-ERROR = "\033[1;31;40m"
+__NORMAL = "\033[0;37;40m"
+__ERROR = "\033[1;31;40m"
 
 def safe_input(prompt, ret_type):
     while True:
@@ -11,35 +11,37 @@ def safe_input(prompt, ret_type):
             return value
         except:
             type = str(ret_type)[8:-2]
-            print(f"{ERROR}The program expects data of the type {type}.{NORMAL}")
+            print(f"{__ERROR}The program expects data of the type {type}.{__NORMAL}")
 
 def regex_safe_input(prompt, pattern):
     while True:
         try:
             value = safe_input(prompt, str)
             regex = re.findall(pattern, value)
-            value = regex[0]
-            return value
+            if value == regex[0]:
+                return value
+            else:
+                raise TypeError # Jump to 'except' section
         except:
-            print(f"{ERROR}The program expects data in the format {pattern}.{NORMAL}")
+            print(f"{__ERROR}The program expects data in the format {pattern}.{__NORMAL}")
 
 def range_safe_input(prompt, ret_type, a, b):
     while True:
         value = safe_input(prompt, ret_type)
-        if a <= value <= b:
+        if a <= value <= b or b <= value <= a:
             return value
         else:
-            print(f"{ERROR}The program expects data in the range from {a} to {b}.{NORMAL}")
+            print(f"{__ERROR}The program expects data in the range from {a} to {b}.{__NORMAL}")
 
 def bool_safe_input(prompt):
     while True:
         value = safe_input(prompt, str)
-        if value in ["True", "true", "1", "Yes", "yes"]:
+        if value.lower() in ["true", "1", "yes", "y"]:
             return True
-        elif value in ["False", "false", "0", "Yes", "yes"]:
+        elif value.lower() in ["false", "0", "no", "n"]:
             return False
         else:
-            print(f"{ERROR}The program expects logical data [True/False].{NORMAL}")
+            print(f"{__ERROR}The program expects logical data [True/False].{__NORMAL}")
 
 def __element_find_type(element):
     for single_type in [int, float, str]:
@@ -61,17 +63,19 @@ def list_safe_input(prompt):
         value = safe_input(prompt, str)
         if value[0] == "[" and value[-1] == "]":
             value = value[1:-1]
-        if ", " in value:
-            value = value.split(", ")
-            lista = []
-            for i in value:
-                lista.append( __element_find_type(i) )
+            if "," in value:
+                lista = []
+                for i in value.split(","):
+                    lista.append( __element_find_type(i) )
+            else:
+                lista[ __element_find_type(value) 
+            return lista
         else:
-            lista[ __element_find_type(i) ]
+            print(f"{__ERROR}The program expects data of the type list.{__NORMAL}")
 
 if __name__ == '__main__':
     regex_safe_input("Enter your date of birth: ", str, "\d\d-\d\d-\d\d\d\d")
     range_safe_input("Enter age: ", int, 3, 99)
     range_safe_input("Enter the side of the square: ", float, 0, 99)
     bool_safe_input("Enter a logical value: ")
-    list_safe_input("Enter a list: ")
+    list_safe_input("Enter a list: ") # This function can only take as argument one dimention list.
