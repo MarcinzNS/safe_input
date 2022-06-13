@@ -63,19 +63,25 @@ def list_safe_input(prompt):
         value = safe_input(prompt, str)
         if value[0] == "[" and value[-1] == "]":
             value = value[1:-1]
+            lista = []
             if "," in value:
-                lista = []
                 for i in value.split(","):
                     lista.append( __element_find_type(i) )
             else:
-                lista[ __element_find_type(value) 
+                lista[ __element_find_type(value)]
             return lista
         else:
             print(f"{__ERROR}The program expects data of the type list.{__NORMAL}")
 
 if __name__ == '__main__':
-    regex_safe_input("Enter your date of birth: ", str, "\d\d-\d\d-\d\d\d\d")
-    range_safe_input("Enter age: ", int, 3, 99)
-    range_safe_input("Enter the side of the square: ", float, 0, 99)
-    bool_safe_input("Enter a logical value: ")
-    list_safe_input("Enter a list: ") # This function can only take as argument one dimention list.
+    output = [
+        regex_safe_input("Enter your date of birth: ", "\d\d-\d\d-\d\d\d\d"),
+        range_safe_input("Enter age: ", int, 3, 99),
+        range_safe_input("Enter the side of the square: ", float, 0, 99),
+        bool_safe_input("Enter a logical value: "),
+        # This function can only take as an input one dimention list.
+        list_safe_input("Enter a list: ")
+    ]
+    for o in output:
+        print(o)
+
